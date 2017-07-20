@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Glyphicon, Button, Row } from 'react-bootstrap';
 
-import { updateNodes } from '../actions';
+import { updateNodes, saveStateToLocalStorage, loadStateFromLocalStorage } from '../actions';
 
 class NodesView extends Component {
 
@@ -140,7 +140,7 @@ class NodesView extends Component {
         return (
             <div>
                 <a href="javascript:void(0)"> { node.name } </a>
-                { !isNodeBeingModified && this.renderNodeModificationControls(hierarchyLocation) }
+                { (!this.state.isAddingNode && !this.state.isEditingNode) && this.renderNodeModificationControls(hierarchyLocation) }
                 { this.state.isAddingNode && isNodeBeingModified && this.renderNodeAddField(hierarchyLocation) }
                 { this.state.isEditingNode && isNodeBeingModified && this.renderNodeModifyField(hierarchyLocation)}
             </div>
@@ -171,6 +171,15 @@ class NodesView extends Component {
     render() {
         return (
             <div>
+                <Button onClick={() => this.props.dispatch(saveStateToLocalStorage())}>
+                    Save To Local Storage
+                </Button>
+                <Button onClick={() => this.props.dispatch(loadStateFromLocalStorage())}>
+                    Load From Local Storage
+                </Button>
+
+                <br/>
+
                 { this.state.isAddingNode && this.state.nodeBeingModified.length === 0 &&  this.renderNodeAddField() }
 
                 { !this.state.isAddingNode &&
