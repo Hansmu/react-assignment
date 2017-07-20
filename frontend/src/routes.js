@@ -6,6 +6,6 @@ import NodesView from './containers/nodes-view';
 
 export default (
     <Route path="/" component={Header}>
-        <Route path="posts/new" component={NodesView} />
+        <Route path="nodes" component={NodesView} />
     </Route>
 );
