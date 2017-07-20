@@ -28,58 +28,6 @@ class NodesView extends Component {
         return { name, children, isOpen };
     }
 
-    renderNodeChildren(nodeChildren, hierarchyLocation=[]) {
-        return (
-            <ul>
-                {
-                    nodeChildren.map((children, index) => {
-                        hierarchyLocation.push(index);
-                        const currentNodeLocation = hierarchyLocation.slice();
-
-                        return (
-                            <li key={`${children.name}-${hierarchyLocation.toString()}`}>
-                                { this.renderNode(children, currentNodeLocation) }
-                                { children.isOpen && this.renderNodeChildren(children.children, hierarchyLocation) }
-                                { hierarchyLocation.length > 0 && hierarchyLocation.pop() }
-                            </li>
-                        );
-                    })
-                }
-            </ul>
-        );
-    }
-
-    renderNode(node, hierarchyLocation) {
-        const isNodeBeingModified = this.state.nodeBeingModified === hierarchyLocation.toString();
-
-        return (
-            <div>
-                <a href="javascript:void(0)"> { node.name } </a>
-                { !isNodeBeingModified && this.renderNodeModificationControls(hierarchyLocation) }
-                { this.state.isAddingNode && isNodeBeingModified && this.renderNodeAddField(hierarchyLocation) }
-                { this.state.isEditingNode && isNodeBeingModified && this.renderNodeModifyField(hierarchyLocation)}
-            </div>
-        );
-    }
-
-    renderNodeModificationControls(hierarchyLocation) {
-        return (
-            <div>
-                <Button bsStyle="success"
-                        onClick={() => this.setState({isAddingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
-                    Add Child <Glyphicon glyph="plus"/>
-                </Button>
-                <Button bsStyle="success"
-                        onClick={() => this.setState({isEditingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
-                    <Glyphicon glyph="pencil"/>
-                </Button>
-                <Button bsStyle="danger" onClick={() => this.findAndRemoveNode(hierarchyLocation)}>
-                    <Glyphicon glyph="trash"/>
-                </Button>
-            </div>
-        );
-    }
-
     addNode(hierarchyLocation=[]) {
         const nodeName = this.state.nodeName;
         const nodes = this.state.nodes;
@@ -126,7 +74,6 @@ class NodesView extends Component {
         if (hierarchyLocation.length > 0) {
             hierarchyLocation.forEach((location, index) => {
                 if (index + 1 === hierarchyLocation.length) {
-                    console.log(nodes);
                     currentNode[location].name = this.state.nodeName;
                 } else {
                     currentNode = currentNode[location].children;
@@ -142,12 +89,20 @@ class NodesView extends Component {
         });
     }
 
+    renderNodeAddField(hierarchyLocation = []) {
+        return this.renderNodeModificationField(this.addNode, hierarchyLocation);
+    }
+
+    renderNodeModifyField(hierarchyLocation = []) {
+        return this.renderNodeModificationField(this.findAndModifyNode, hierarchyLocation);
+    }
+
     renderNodeModificationField(modificationAction, hierarchyLocation=[]) {
         return (
             <div>
-               <input type="text"
-                      value={this.state.nodeName}
-                      onChange={event => this.setState({nodeName: event.target.value})}/>
+                <input type="text"
+                       value={this.state.nodeName}
+                       onChange={event => this.setState({nodeName: event.target.value})}/>
                 <Button bsStyle="success"
                         onClick={() => modificationAction(hierarchyLocation)}>
                     <Glyphicon glyph="ok"/>
@@ -160,12 +115,56 @@ class NodesView extends Component {
         );
     }
 
-    renderNodeAddField(hierarchyLocation = []) {
-        return this.renderNodeModificationField(this.addNode, hierarchyLocation);
+    renderNodeModificationControls(hierarchyLocation) {
+        return (
+            <div>
+                <Button bsStyle="success"
+                        onClick={() => this.setState({isAddingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
+                    Add Child <Glyphicon glyph="plus"/>
+                </Button>
+                <Button bsStyle="success"
+                        onClick={() => this.setState({isEditingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
+                    <Glyphicon glyph="pencil"/>
+                </Button>
+                <Button bsStyle="danger" onClick={() => this.findAndRemoveNode(hierarchyLocation)}>
+                    <Glyphicon glyph="trash"/>
+                </Button>
+            </div>
+        );
     }
 
-    renderNodeModifyField(hierarchyLocation = []) {
-        return this.renderNodeModificationField(this.findAndModifyNode, hierarchyLocation);
+    renderNode(node, hierarchyLocation) {
+        const isNodeBeingModified = this.state.nodeBeingModified === hierarchyLocation.toString();
+
+        return (
+            <div>
+                <a href="javascript:void(0)"> { node.name } </a>
+                { !isNodeBeingModified && this.renderNodeModificationControls(hierarchyLocation) }
+                { this.state.isAddingNode && isNodeBeingModified && this.renderNodeAddField(hierarchyLocation) }
+                { this.state.isEditingNode && isNodeBeingModified && this.renderNodeModifyField(hierarchyLocation)}
+            </div>
+        );
+    }
+
+    renderNodeChildren(nodeChildren, hierarchyLocation=[]) {
+        return (
+            <ul>
+                {
+                    nodeChildren.map((children, index) => {
+                        hierarchyLocation.push(index);
+                        const currentNodeLocation = hierarchyLocation.slice();
+
+                        return (
+                            <li key={`${children.name}-${hierarchyLocation.toString()}`}>
+                                { this.renderNode(children, currentNodeLocation) }
+                                { children.isOpen && this.renderNodeChildren(children.children, hierarchyLocation) }
+                                { hierarchyLocation.length > 0 && hierarchyLocation.pop() }
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        );
     }
 
     render() {
