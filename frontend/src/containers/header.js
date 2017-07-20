@@ -2,16 +2,28 @@ import React, { Component } from 'react';
 
 export default class Header extends Component {
 
-  renderNavbar() {
-    return (
+  renderNavbar(currentPath, navigateTo) {
+      const isInNodesView = currentPath === '/nodes';
+
+      return (
         <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="navbar-header">
-              <a className="navbar-brand" href="#">React Node Assignment</a>
+              <a className="navbar-brand"
+                 onClick={() => navigateTo('/nodes')}
+                 href="#">
+                  React Node Assignment
+              </a>
             </div>
             <ul className="nav navbar-nav">
-              <li className="active"><a href="#">Nodes</a></li>
-              <li><a href="#">Nodes Save And Load</a></li>
+              <li className={ isInNodesView ? 'active' : '' }
+                  onClick={() => navigateTo('/nodes')}>
+                  <a href="#">Nodes</a>
+              </li>
+              <li className={ isInNodesView ? '' : 'active' }
+                  onClick={() => navigateTo('nodes/io')}>
+                  <a href="#">Nodes IO</a>
+              </li>
             </ul>
           </div>
         </nav>
@@ -20,11 +32,11 @@ export default class Header extends Component {
 
 
   render() {
-    return (
-        <div>
-          { this.renderNavbar() }
-          { this.props.children }
-        </div>
+      return (
+          <div>
+              { this.renderNavbar(this.props.location.pathname, this.props.router.push) }
+              { this.props.children }
+          </div>
     );
   }
 }
