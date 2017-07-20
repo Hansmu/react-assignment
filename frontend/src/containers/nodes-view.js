@@ -155,13 +155,18 @@ class NodesView extends Component {
                         hierarchyLocation.push(index);
                         const currentNodeLocation = hierarchyLocation.slice();
 
-                        return (
+                        const node = (
                             <li key={`${children.name}-${hierarchyLocation.toString()}`}>
                                 { this.renderNode(children, currentNodeLocation) }
                                 { children.isOpen && this.renderNodeChildren(children.children, hierarchyLocation) }
-                                { hierarchyLocation.length > 0 && hierarchyLocation.pop() }
                             </li>
                         );
+
+                        if (hierarchyLocation.length > 0) {
+                            hierarchyLocation.pop();
+                        }
+
+                        return node;
                     })
                 }
             </ul>
