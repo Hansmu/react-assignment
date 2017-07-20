@@ -12,6 +12,7 @@ class NodesView extends Component {
         this.state = {
             isAddingNode: false,
             isEditingNode: false,
+            isDeletingNode: false,
             nodeBeingModified: '',
             nodeName: ''
         };
@@ -65,6 +66,7 @@ class NodesView extends Component {
         }
 
         this.props.dispatch(updateNodes(nodes));
+        this.setState({isDeletingNode: true}, this.setState({isDeletingNode: false}));
     }
 
     findAndModifyNode(hierarchyLocation = []) {
