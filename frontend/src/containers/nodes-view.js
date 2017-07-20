@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Glyphicon, Button, Row } from 'react-bootstrap';
 
-import { getHelloWorldExample, getExamples } from '../actions';
+import { updateNodes } from '../actions';
 
 class NodesView extends Component {
 
@@ -10,7 +10,6 @@ class NodesView extends Component {
         super(props);
 
         this.state = {
-            nodes: [],
             isAddingNode: false,
             isEditingNode: false,
             nodeBeingModified: '',
@@ -30,7 +29,7 @@ class NodesView extends Component {
 
     addNode(hierarchyLocation=[]) {
         const nodeName = this.state.nodeName;
-        const nodes = this.state.nodes;
+        const nodes = this.props.nodes;
         let currentNode = nodes;
         const newNode = this.createNode(nodeName);
 
@@ -42,16 +41,17 @@ class NodesView extends Component {
 
         currentNode.push(newNode);
 
+        this.props.dispatch(updateNodes(nodes));
+
         this.setState({
             isAddingNode: false,
             nodeBeingModified: '',
-            nodeName: '',
-            nodes
+            nodeName: ''
         });
     }
 
     findAndRemoveNode(hierarchyLocation = []) {
-        const nodes = this.state.nodes;
+        const nodes = this.props.nodes;
         let currentNode = nodes;
 
         if (hierarchyLocation.length > 0) {
@@ -64,11 +64,11 @@ class NodesView extends Component {
             });
         }
 
-        this.setState({nodes});
+        this.props.dispatch(updateNodes(nodes));
     }
 
     findAndModifyNode(hierarchyLocation = []) {
-        const nodes = this.state.nodes;
+        const nodes = this.props.nodes;
         let currentNode = nodes;
 
         if (hierarchyLocation.length > 0) {
@@ -81,11 +81,12 @@ class NodesView extends Component {
             });
         }
 
+        this.props.dispatch(updateNodes(nodes));
+
         this.setState({
             isEditingNode: false,
             nodeBeingModified: '',
-            nodeName: '',
-            nodes
+            nodeName: ''
         });
     }
 
@@ -180,19 +181,15 @@ class NodesView extends Component {
                 }
 
                 <ul>
-                    { this.renderNodeChildren(this.state.nodes) }
+                    { this.renderNodeChildren(this.props.nodes) }
                 </ul>
             </div>
         );
     }
 }
 
-NodesView.propTypes = {
-
-};
-
 const mapStateToProps = (state) => ({
-
+    nodes: state.main.nodes
 });
 
 export default connect(mapStateToProps, dispatch => ({dispatch}))(NodesView);

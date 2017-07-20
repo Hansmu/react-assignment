@@ -1,13 +1,11 @@
-import { GET_EXAMPLES, GET_HELLO_WORLD } from '../actions/types';
+import { UPDATE_NODES } from '../actions/types';
 
-const INITIAL_STATE = { examples: [], helloWorldMessage: '' };
+const INITIAL_STATE = { nodes: [] };
 
 export default function(state = INITIAL_STATE, action) {
     switch(action.type) {
-        case GET_EXAMPLES:
-            return { ...state, examples: action.payload.data.data };
-        case GET_HELLO_WORLD:
-            return {...state, helloWorldMessage: action.payload.data.data };
+        case UPDATE_NODES:
+            return { ...state, nodes: action.payload };
         default:
             return state;
     }
