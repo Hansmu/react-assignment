@@ -3,21 +3,21 @@ import React, { Component } from 'react';
 export default class Header extends Component {
 
   renderNavbar(currentPath, navigateTo) {
-      const isInNodesView = currentPath === '/nodes';
+      const isInNodesView = currentPath === '/';
 
       return (
         <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="navbar-header">
               <a className="navbar-brand"
-                 onClick={() => navigateTo('/nodes')}
+                 onClick={() => navigateTo('/')}
                  href="#">
                   React Node Assignment
               </a>
             </div>
             <ul className="nav navbar-nav">
               <li className={ isInNodesView ? 'active' : '' }
-                  onClick={() => navigateTo('/nodes')}>
+                  onClick={() => navigateTo('/')}>
                   <a href="#">Nodes</a>
               </li>
               <li className={ isInNodesView ? '' : 'active' }
