@@ -19,6 +19,7 @@ class NodesView extends Component {
 
         this.addNode = this.addNode.bind(this);
         this.renderNode = this.renderNode.bind(this);
+        this.findAndModifyNode = this.findAndModifyNode.bind(this);
         this.findAndRemoveNode = this.findAndRemoveNode.bind(this);
         this.renderNodeChildren = this.renderNodeChildren.bind(this);
     }
@@ -56,7 +57,7 @@ class NodesView extends Component {
                 <a href="javascript:void(0)"> { node.name } </a>
                 { !isNodeBeingModified && this.renderNodeModificationControls(hierarchyLocation) }
                 { this.state.isAddingNode && isNodeBeingModified && this.renderNodeAddField(hierarchyLocation) }
-                { this.state.isEditingNode && isNodeBeingModified && this.renderNodeAddField(hierarchyLocation)}
+                { this.state.isEditingNode && isNodeBeingModified && this.renderNodeModifyField(hierarchyLocation)}
             </div>
         );
     }
@@ -68,7 +69,8 @@ class NodesView extends Component {
                         onClick={() => this.setState({isAddingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
                     Add Child <Glyphicon glyph="plus"/>
                 </Button>
-                <Button bsStyle="success">
+                <Button bsStyle="success"
+                        onClick={() => this.setState({isEditingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
                     <Glyphicon glyph="pencil"/>
                 </Button>
                 <Button bsStyle="danger" onClick={() => this.findAndRemoveNode(hierarchyLocation)}>
@@ -117,14 +119,37 @@ class NodesView extends Component {
         this.setState({nodes});
     }
 
-    renderNodeAddField(hierarchyLocation=[]) {
+    findAndModifyNode(hierarchyLocation = []) {
+        const nodes = this.state.nodes;
+        let currentNode = nodes;
+
+        if (hierarchyLocation.length > 0) {
+            hierarchyLocation.forEach((location, index) => {
+                if (index + 1 === hierarchyLocation.length) {
+                    console.log(nodes);
+                    currentNode[location].name = this.state.nodeName;
+                } else {
+                    currentNode = currentNode[location].children;
+                }
+            });
+        }
+
+        this.setState({
+            isEditingNode: false,
+            nodeBeingModified: '',
+            nodeName: '',
+            nodes
+        });
+    }
+
+    renderNodeModificationField(modificationAction, hierarchyLocation=[]) {
         return (
             <div>
                <input type="text"
                       value={this.state.nodeName}
                       onChange={event => this.setState({nodeName: event.target.value})}/>
                 <Button bsStyle="success"
-                        onClick={() => this.addNode(hierarchyLocation)}>
+                        onClick={() => modificationAction(hierarchyLocation)}>
                     <Glyphicon glyph="ok"/>
                 </Button>
                 <Button bsStyle="danger"
@@ -133,6 +158,14 @@ class NodesView extends Component {
                 </Button>
             </div>
         );
+    }
+
+    renderNodeAddField(hierarchyLocation = []) {
+        return this.renderNodeModificationField(this.addNode, hierarchyLocation);
+    }
+
+    renderNodeModifyField(hierarchyLocation = []) {
+        return this.renderNodeModificationField(this.findAndModifyNode, hierarchyLocation);
     }
 
     render() {
