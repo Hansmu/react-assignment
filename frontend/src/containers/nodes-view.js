@@ -103,10 +103,12 @@ class NodesView extends Component {
     renderNodeModificationField(modificationAction, hierarchyLocation=[]) {
         return (
             <div>
-                <input type="text"
+                <input id="node-name-field"
+                       type="text"
                        value={this.state.nodeName}
                        onChange={event => this.setState({nodeName: event.target.value})}/>
-                <Button bsStyle="success"
+                <Button id="modify-field"
+                        bsStyle="success"
                         onClick={() => modificationAction(hierarchyLocation)}>
                     <Glyphicon glyph="ok"/>
                 </Button>
@@ -121,15 +123,19 @@ class NodesView extends Component {
     renderNodeModificationControls(hierarchyLocation) {
         return (
             <div>
-                <Button bsStyle="success"
+                <Button id={`add-child-${hierarchyLocation.join('-')}`}
+                        bsStyle="success"
                         onClick={() => this.setState({isAddingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
                     Add Child <Glyphicon glyph="plus"/>
                 </Button>
-                <Button bsStyle="success"
+                <Button id={`edit-child-${hierarchyLocation.join('-')}`}
+                        bsStyle="success"
                         onClick={() => this.setState({isEditingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
                     <Glyphicon glyph="pencil"/>
                 </Button>
-                <Button bsStyle="danger" onClick={() => this.findAndRemoveNode(hierarchyLocation)}>
+                <Button id={`delete-child-${hierarchyLocation.join('-')}`}
+                        bsStyle="danger"
+                        onClick={() => this.findAndRemoveNode(hierarchyLocation)}>
                     <Glyphicon glyph="trash"/>
                 </Button>
             </div>
@@ -141,7 +147,7 @@ class NodesView extends Component {
 
         return (
             <div>
-                <a href="javascript:void(0)"> { node.name } </a>
+                <a id={`node-name-${hierarchyLocation.join('-')}`} href="javascript:void(0)"> { node.name } </a>
                 { (!this.state.isAddingNode && !this.state.isEditingNode) && this.renderNodeModificationControls(hierarchyLocation) }
                 { this.state.isAddingNode && isNodeBeingModified && this.renderNodeAddField(hierarchyLocation) }
                 { this.state.isEditingNode && isNodeBeingModified && this.renderNodeModifyField(hierarchyLocation)}
@@ -181,7 +187,8 @@ class NodesView extends Component {
                 { this.state.isAddingNode && this.state.nodeBeingModified.length === 0 &&  this.renderNodeAddField() }
 
                 { !this.state.isAddingNode &&
-                    <Button bsStyle="success"
+                    <Button id="add-parent"
+                            bsStyle="success"
                             onClick={() => this.setState({isAddingNode: true})}>
                         Add Parent <Glyphicon glyph="plus"/>
                     </Button>
@@ -196,7 +203,7 @@ class NodesView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    nodes: state.main.nodes
+    nodes: state.main.nodes || []
 });
 
 export default connect(mapStateToProps, dispatch => ({dispatch}))(NodesView);
