@@ -35,16 +35,19 @@ class NodesView extends Component {
     render() {
         return (
             <div>
-                <Button onClick={() => this.props.dispatch(saveStateToLocalStorage())}>
+                <Button id="local-storage-save"
+                        onClick={() => this.props.dispatch(saveStateToLocalStorage())}>
                     Save To Local Storage
                 </Button>
-                <Button onClick={() => this.props.dispatch(loadStateFromLocalStorage())}>
+                <Button id="local-storage-load"
+                        onClick={() => this.props.dispatch(loadStateFromLocalStorage())}>
                     Load From Local Storage
                 </Button>
 
                 <hr/>
 
-                <Button onClick={this.saveFile}>
+                <Button id="file-save"
+                        onClick={this.saveFile}>
                     Save To File
                 </Button>
                 <div className="dropzone">
