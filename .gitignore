@@ -221,3 +221,11 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/linux,windows,macos,intellij+iml,eclipse,gradle,jetbrains
 
 /.idea
+
+/node_modules
+bundle.js
+npm-debug.log
+
+# IntelliJ
+*.iml
+/.idea
