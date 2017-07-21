@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone'
 import { Glyphicon, Button, Row } from 'react-bootstrap';
 import FileSaver from 'file-saver';
 
-import { updateNodes, saveStateToLocalStorage, loadStateFromLocalStorage } from '../actions';
+import { updateNodes, saveStateToLocalStorage, loadStateFromLocalStorage, readStateFromServer, saveStateToServer } from '../actions';
 
 class NodesView extends Component {
 
@@ -13,6 +13,7 @@ class NodesView extends Component {
 
         this.onDrop = this.onDrop.bind(this);
         this.saveFile = this.saveFile.bind(this);
+        this.saveStateToServer = this.saveStateToServer.bind(this);
     }
 
     onDrop(files) {
@@ -30,6 +31,19 @@ class NodesView extends Component {
         const nodes = JSON.stringify(this.props.nodes);
         const blob = new Blob([nodes], {type: 'text/plain;charset=utf-8'});
         FileSaver.saveAs(blob, 'nodes.txt');
+    }
+
+    saveStateToServer() {
+        const nodes = JSON.stringify(this.props.nodes);
+        const blob = new Blob([nodes], {type: 'text/plain;charset=utf-8'});
+
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+
+        reader.onloadend = (event) => {
+            const base64data = {encoding: event.target.result};
+            this.props.dispatch(saveStateToServer(base64data));
+        }
     }
 
     render() {
@@ -56,6 +70,17 @@ class NodesView extends Component {
                         <p>Load From File</p>
                     </Dropzone>
                 </div>
+
+                <hr/>
+
+                <Button id="remote-save"
+                        onClick={() => this.props.dispatch(readStateFromServer())}>
+                    Load From Server
+                </Button>
+                <Button id="remote-load"
+                        onClick={this.saveStateToServer}>
+                    Save To Server
+                </Button>
             </div>
         );
     }
