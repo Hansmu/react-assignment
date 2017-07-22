@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Glyphicon, Button, Row } from 'react-bootstrap';
+import { Glyphicon, Button, Form, FormControl } from 'react-bootstrap';
 
 import { updateNodes } from '../actions';
 
@@ -102,11 +102,11 @@ class NodesView extends Component {
 
     renderNodeModificationField(modificationAction, hierarchyLocation=[]) {
         return (
-            <div>
-                <input id="node-name-field"
-                       type="text"
-                       value={this.state.nodeName}
-                       onChange={event => this.setState({nodeName: event.target.value})}/>
+            <Form inline>
+                <FormControl id="node-name-field"
+                             type="text"
+                             value={this.state.nodeName}
+                             onChange={event => this.setState({nodeName: event.target.value})}/>
                 <Button id="modify-field"
                         bsStyle="success"
                         onClick={() => modificationAction(hierarchyLocation)}>
@@ -116,13 +116,13 @@ class NodesView extends Component {
                         onClick={() => this.setState({isAddingNode: false, isEditingNode: false, nodeBeingModified: ''})}>
                     <Glyphicon glyph="remove"/>
                 </Button>
-            </div>
+            </Form>
         );
     }
 
     renderNodeModificationControls(hierarchyLocation) {
         return (
-            <div>
+            <span>
                 <Button id={`add-child-${hierarchyLocation.join('-')}`}
                         bsStyle="success"
                         onClick={() => this.setState({isAddingNode: true, nodeBeingModified: hierarchyLocation.toString()})}>
@@ -138,7 +138,7 @@ class NodesView extends Component {
                         onClick={() => this.findAndRemoveNode(hierarchyLocation)}>
                     <Glyphicon glyph="trash"/>
                 </Button>
-            </div>
+            </span>
         );
     }
 
@@ -147,7 +147,11 @@ class NodesView extends Component {
 
         return (
             <div>
-                <a id={`node-name-${hierarchyLocation.join('-')}`} href="javascript:void(0)"> { node.name } </a>
+                <a id={`node-name-${hierarchyLocation.join('-')}`}
+                   style={{fontSize: '20px'}}
+                   href="javascript:void(0)">
+                    { node.name + ' ' }
+                </a>
                 { (!this.state.isAddingNode && !this.state.isEditingNode) && this.renderNodeModificationControls(hierarchyLocation) }
                 { this.state.isAddingNode && isNodeBeingModified && this.renderNodeAddField(hierarchyLocation) }
                 { this.state.isEditingNode && isNodeBeingModified && this.renderNodeModifyField(hierarchyLocation)}
