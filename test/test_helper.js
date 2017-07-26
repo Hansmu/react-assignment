@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 import jsdom from 'jsdom';
+import page from 'phantomjs/webpage';
 import chai, { expect } from 'chai';
 import chaiJquery from 'chai-jquery';
 import { Provider } from 'react-redux';
