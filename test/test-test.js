@@ -1,7 +1,7 @@
-var React = require('react');
-var TestUtils = require('react-dom/test-utils'); //I like using the Test Utils, but you can just use the DOM API instead.
-var expect = require('expect');
-var Root = require('./root'); //my root-test lives in components/__tests__/, so this is how I require in my components.
+import React from 'react';
+import TestUtils from 'react-dom/test-utils';
+import expect from'expect';
+import Root from './root';
 
 describe('root', function () {
     it('renders without problems', function () {
