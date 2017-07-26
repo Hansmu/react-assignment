@@ -1,5 +1,18 @@
-import { renderComponent, expect } from '../test_helper';
+import React from 'react';
+import { expect } from 'chai';
+import { mount } from 'enzyme';
+import { createStore } from 'redux';
+import reducers from '../../src/reducers';
+import { Provider } from 'react-redux';
 import Nodes from '../../src/containers/nodes-view';
+
+function renderComponent(ComponentClass, props = {}, state = {}) {
+    return mount(
+        <Provider store={createStore(reducers, state)}>
+            <ComponentClass {...props} />
+        </Provider>
+    );
+}
 
 describe('Nodes View', () => {
     let component;
@@ -10,21 +23,21 @@ describe('Nodes View', () => {
 
     it('Add nested children', () => {
         component.find('button').simulate('click');
-        component.find('#node-name-field').simulate('change', 'bob');
+        component.find('#node-name-field').simulate('change', {target: {value: 'bob'}});
         component.find('#modify-field').simulate('click');
 
         component.find('#add-parent').simulate('click');
-        component.find('#node-name-field').simulate('change', 'richard');
+        component.find('#node-name-field').simulate('change', {target: {value: 'richard'}});
         component.find('#modify-field').simulate('click');
 
         component.find('#add-child-0').simulate('click');
-        component.find('#node-name-field').simulate('change', '1-2-3');
+        component.find('#node-name-field').simulate('change', {target: {value: '1-2-3'}});
         component.find('#modify-field').simulate('click');
 
         expect(component.find('a').length).to.equal(3);
-        expect(component.find('#node-name-0')).to.have.text('bob ');
-        expect(component.find('#node-name-1')).to.have.text('richard ');
-        expect(component.find('#node-name-0-0')).to.have.text('1-2-3 ');
+        expect(component.find('#node-name-0').text()).to.equal('bob ');
+        expect(component.find('#node-name-1').text()).to.equal('richard ');
+        expect(component.find('#node-name-0-0').text()).to.equal('1-2-3 ');
     });
 
     describe('Edit elements', () => {
@@ -38,18 +51,18 @@ describe('Nodes View', () => {
             component.find('#delete-child-0').simulate('click');
 
             expect(component.find('a').length).to.equal(1);
-            expect(component.find('#node-name-0')).to.have.text('richard ');
+            expect(component.find('#node-name-0').text()).to.equal('richard ');
         });
 
         it('Edit child', () => {
-            expect(component.find('#node-name-0-0')).to.have.text('1-2-3 ');
+            expect(component.find('#node-name-0-0').text()).to.equal('1-2-3 ');
 
             component.find('#edit-child-0-0').simulate('click');
-            component.find('#node-name-field').simulate('change', 'middle-node');
+            component.find('#node-name-field').simulate('change', {target: {value: 'middle-node'}});
             component.find('#modify-field').simulate('click');
 
             expect(component.find('a').length).to.equal(4);
-            expect(component.find('#node-name-0-0')).to.have.text('middle-node ');
+            expect(component.find('#node-name-0-0').text()).to.equal('middle-node ');
         });
     });
 
