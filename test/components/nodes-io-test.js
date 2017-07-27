@@ -1,4 +1,4 @@
-import { renderComponent, expect } from '../test_helper';
+import { renderComponent } from '../test_helper';
 import { assert } from 'chai';
 import NodesIO from '../../src/containers/nodes-io';
 

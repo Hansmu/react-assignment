@@ -1,18 +1,6 @@
-import React from 'react';
 import { expect } from 'chai';
-import { mount } from 'enzyme';
-import { createStore } from 'redux';
-import reducers from '../../src/reducers';
-import { Provider } from 'react-redux';
+import { renderComponent } from '../test_helper';
 import Nodes from '../../src/containers/nodes-view';
-
-function renderComponent(ComponentClass, props = {}, state = {}) {
-    return mount(
-        <Provider store={createStore(reducers, state)}>
-            <ComponentClass {...props} />
-        </Provider>
-    );
-}
 
 describe('Nodes View', () => {
     let component;
