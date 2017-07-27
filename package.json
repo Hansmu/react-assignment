@@ -7,8 +7,10 @@
     "mock-server": "json-server --watch db.json",
     "start": "concurrently \"npm run mock-server\" \"node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js\"",
     "build": "node ./node_modules/webpack/bin/webpack.js --config webpack.config.js",
-    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
-    "test:watch": "concurrently \"npm run mock-server\" \"npm run test -- --watch\""
+    "test": "karma start",
+    "testSingle": "karma start --single-run",
+    "test:server": "concurrently \"npm run mock-server\" \"npm run test\"",
+    "testSingle:server": "concurrently \"npm run mock-server\" \"npm run testSingle\""
   },
   "author": "",
   "license": "ISC",
