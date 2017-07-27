@@ -73,11 +73,11 @@ class NodesView extends Component {
 
                 <hr/>
 
-                <Button id="remote-save"
+                <Button id="remote-load"
                         onClick={() => this.props.dispatch(readStateFromServer())}>
                     Load From Server
                 </Button>
-                <Button id="remote-load"
+                <Button id="remote-save"
                         onClick={this.saveStateToServer}>
                     Save To Server
                 </Button>
