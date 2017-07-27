@@ -1,5 +1,7 @@
 import { renderComponent } from '../test_helper';
 import { assert } from 'chai';
+import sinon from 'sinon';
+import FileSaver from 'file-saver';
 import NodesIO from '../../src/containers/nodes-io';
 
 describe('Nodes IO', () => {
@@ -43,6 +45,17 @@ describe('Nodes IO', () => {
         component.find('#local-storage-save').simulate('click');
 
         assert(window.localStorage.getItem('nodes'), defaultState);
+    });
+
+    it('Save state to file', () => {
+        const nodes = JSON.stringify(defaultState);
+        const expectedBlob = new Blob([nodes], {type: 'text/plain;charset=utf-8'});
+
+        const stub = sinon.stub(FileSaver, 'saveAs').callsFake((blob, fileName) => {
+            assert.deepEqual(blob, expectedBlob);
+        });
+
+        component.find('#file-save').simulate('click');
     });
 
     it('Save to and load from server', () => {
