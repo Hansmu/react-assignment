@@ -9,18 +9,20 @@ const headers = {
     }
 };
 
-export function getRequest(uri) {
+function getRequest(uri) {
     return axios.get(`${config.backendUrl}/${uri}`, headers);
 }
 
-export function postRequest(uri, payload) {
+function postRequest(uri, payload) {
     return axios.post(`${config.backendUrl}/${uri}`, payload, headers);
 }
 
-export function deleteRequest(uri) {
+function deleteRequest(uri) {
     return axios.delete(`${config.backendUrl}/${uri}`, headers);
 }
 
-export function putRequest(uri, payload) {
+function putRequest(uri, payload) {
     return axios.put(`${config.backendUrl}/${uri}`, payload, headers);
 }
+
+export default { getRequest, postRequest, deleteRequest, putRequest };

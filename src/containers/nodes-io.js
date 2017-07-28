@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone'
 import { Glyphicon, Button, Row } from 'react-bootstrap';
+import FileUtils from '../../utils/file-utils';
 import FileSaver from 'file-saver';
 
 import { updateNodes, saveStateToLocalStorage, loadStateFromLocalStorage, readStateFromServer, saveStateToServer } from '../actions';
@@ -18,13 +19,11 @@ class NodesView extends Component {
 
     onDrop(files) {
         const file = files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const nodes = JSON.parse(event.target.result);
-            this.props.dispatch(updateNodes(nodes));
-        };
 
-        reader.readAsText(file);
+        FileUtils.readAsText(file, (result) => {
+            const nodes = JSON.parse(result);
+            this.props.dispatch(updateNodes(nodes));
+        });
     }
 
     saveFile() {
@@ -36,14 +35,10 @@ class NodesView extends Component {
     saveStateToServer() {
         const nodes = JSON.stringify(this.props.nodes);
         const blob = new Blob([nodes], {type: 'text/plain;charset=utf-8'});
-
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-
-        reader.onloadend = (event) => {
-            const base64data = {encoding: event.target.result};
+        FileUtils.readAsDataUrl(blob, (result) => {
+            const base64data = {encoding: result};
             this.props.dispatch(saveStateToServer(base64data));
-        }
+        });
     }
 
     render() {

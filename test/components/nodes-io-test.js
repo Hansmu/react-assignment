@@ -2,6 +2,8 @@ import { renderComponent } from '../test_helper';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import FileSaver from 'file-saver';
+import FileUtils from '../../utils/file-utils';
+import RequestUtils from '../../utils/request-utils';
 import NodesIO from '../../src/containers/nodes-io';
 
 describe('Nodes IO', () => {
@@ -23,7 +25,7 @@ describe('Nodes IO', () => {
     it('Save to local storage', () => {
         component.find('#local-storage-save').simulate('click');
 
-        assert(window.localStorage.getItem('nodes'), defaultState);
+        assert.equal(window.localStorage.getItem('nodes'), defaultStateAsString);
     });
 
     it('Save and load from local storage', () => {
@@ -32,7 +34,7 @@ describe('Nodes IO', () => {
 
         component.find('#local-storage-save').simulate('click');
 
-        assert(window.localStorage.getItem('nodes'), modifiedState);
+        assert.equal(window.localStorage.getItem('nodes'), modifiedStateAsString);
     });
 
     it('Load state from local file', () => {
@@ -41,10 +43,11 @@ describe('Nodes IO', () => {
         const fileContents = { fileContents: defaultStateAsString };
         const file = new Blob([fileContents], { type: 'text/plain' });
 
-        component.find('input').simulate('change', {target: {files: [file]}});
-        component.find('#local-storage-save').simulate('click');
+        const stub = sinon.stub(FileUtils, 'readAsText').callsFake((blob) => {
+            assert.deepEqual(blob, file);
+        });
 
-        assert(window.localStorage.getItem('nodes'), defaultState);
+        component.find('input').simulate('change', {target: {files: [file]}});
     });
 
     it('Save state to file', () => {
@@ -58,8 +61,20 @@ describe('Nodes IO', () => {
         component.find('#file-save').simulate('click');
     });
 
-    it('Save to and load from server', () => {
+    it('Save to server', () => {
+        const nodes = JSON.stringify(defaultState);
+        const expectedBlob = new Blob([nodes], {type: 'text/plain;charset=utf-8'});
+
+        const stub = sinon.stub(FileUtils, 'readAsDataUrl').callsFake((blob) => {
+            assert.deepEqual(blob, expectedBlob);
+        });
+
         component.find('#remote-save').simulate('click');
+    });
+
+    it('Load from server', () => {
+        const stub = sinon.stub(RequestUtils, 'getRequest');
+        stub.returns({data: {encoding: "data:text/plain;charset=utf-8;base64,W3sibmFtZSI6ImJvYiIsImNoaWxkcmVuIjpbeyJuYW1lIjoiMS0yLTMiLCJjaGlsZHJlbiI6W3sibmFtZSI6IjUtNjctIiwiY2hpbGRyZW4iOltdLCJpc09wZW4iOnRydWV9XSwiaXNPcGVuIjp0cnVlfV0sImlzT3BlbiI6dHJ1ZX0seyJuYW1lIjoicmljaGFyZCIsImNoaWxkcmVuIjpbXSwiaXNPcGVuIjp0cnVlfV0="}});
 
         window.localStorage.setItem('nodes', '[]');
         component.find('#local-storage-load').simulate('click');
@@ -67,6 +82,6 @@ describe('Nodes IO', () => {
         component.find('#remote-load').simulate('click');
         component.find('#local-storage-save').simulate('click');
 
-        assert(window.localStorage.getItem('nodes'), defaultState);
+        assert.equal(window.localStorage.getItem('nodes'), defaultStateAsString);
     });
 });
