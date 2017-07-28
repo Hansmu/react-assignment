@@ -12,4 +12,4 @@ In order to run the tests type in: **npm run test:watch**. This will run the tes
 
 **Running tests for a single time**
 
-In order to run tests just once with the mock server type in **npm run testSingle:server**. To run just the tests use **npm run testSingle**.
+In order to run tests just once with the mock server type in **npm run testSingle:server**. This will leave the server running, but the tests will run only once. To run just the tests use **npm run testSingle**.
