@@ -2,13 +2,14 @@ var webpack = require('webpack');
 
 module.exports = function (config) {
     config.set({
-        browsers: [ 'Chrome' ],
+        browsers: [ 'PhantomJS' ],
         singleRun: false,
         frameworks: [ 'mocha', 'chai', 'sinon'],
         files: [
+            'node_modules/babel-polyfill/dist/polyfill.js',
             'tests.webpack.js'
         ],
-        plugins: [ 'karma-chrome-launcher', 'karma-chai', 'karma-mocha', 'karma-sinon',
+        plugins: [ 'karma-phantomjs-launcher', 'karma-chai', 'karma-mocha', 'karma-sinon',
             'karma-sourcemap-loader', 'karma-webpack', 'karma-mocha-reporter'
         ],
         preprocessors: {
